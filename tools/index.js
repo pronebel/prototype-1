@@ -1,0 +1,1 @@
+exports.configParser = require('./lib/config-parser');

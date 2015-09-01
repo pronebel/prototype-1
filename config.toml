@@ -1,0 +1,14 @@
+mode = 'development'
+
+[project]
+theme = 'default'
+
+[server]
+  [server.development]
+    protocol = "http"
+    hostname = 'localhost'
+    port = 8080
+  [server.production]
+    protocol = "https"
+    hostname = 'localhost'
+    port = 8080

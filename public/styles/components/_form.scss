@@ -1,0 +1,82 @@
+.form-status {
+  display: block;
+  margin: 0 auto 2rem;
+
+  width: 100%;
+  max-width: 23rem;
+
+  .avatar {
+    margin: 0.5rem 0;
+
+    width: 3rem;
+    height: auto;
+  }
+
+  .messages {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    padding: 0.5rem;
+    border: 0.125rem solid rgba(200, 200, 200, 1);
+
+    border-radius: 0.25rem;
+  }
+}
+
+form {
+  margin: 0 auto;
+  padding: 1rem;
+
+  width: 100%;
+
+  &.small {
+    max-width: 25rem;
+  }
+
+  .form-field {
+    position: relative;
+    margin: 1rem auto;
+  }
+
+  .form-control {
+    position: relative;
+    margin: 2rem auto;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="date"],
+  input[type="password"] {
+    display: block;
+    margin: 0;
+    padding: 1rem;
+    border: 0.125rem solid rgba(200, 200, 200, 1);
+
+    width: 100%;
+
+    outline: none;
+
+    border-radius: 1.75rem;
+
+    &:focus + .placeholder {
+      bottom: 100%;
+      opacity: 1; 
+    }
+  }
+
+  .placeholder {
+    position: absolute;
+    bottom: 50%;
+    left: 0;
+    display: block;
+    padding: 0 1rem;
+
+    font-size: 75%;
+
+    opacity: 0;
+
+    transition: all 0.5s;
+  }
+}

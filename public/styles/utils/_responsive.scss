@@ -1,0 +1,21 @@
+$sm: 36rem;
+$md: 50rem;
+$lg: 64rem;
+$xl: 80rem;
+
+$screen-type: sm, md, lg, xl;
+
+@mixin screen($type) {
+  @if $type == sm {
+    @media screen and (max-width: $sm) { @content };
+  }
+  @else if $type == md {
+    @media screen and (min-width: $sm) and (max-width: $md) { @content };
+  }
+  @else if $type == lg {
+    @media screen and (min-width: $md) and (max-width: $lg) { @content };
+  }
+  @else if $type == xl {
+    @media screen and (min-width: $lg) { @content };
+  }
+}

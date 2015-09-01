@@ -1,0 +1,26 @@
+.theme.default {
+  .nav {
+    a, a:link, a:active, a:visited {
+      color: rgba(30, 30, 30, 1);
+    }
+  }
+
+  .button {
+    &.primary {
+      border-color: rgba(30, 30, 30, 1);
+
+      color: white;
+      background-color: rgba(30, 30, 30, 1);
+
+      &[disabled] {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  form {
+    .placeholder {
+      color: rgba(80, 80, 80, 1);
+    }
+  }
+}

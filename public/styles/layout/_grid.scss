@@ -1,0 +1,44 @@
+@import "../utils/responsive";
+
+$columns: (5, 24);
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+
+  @each $column in $columns {
+    @for $i from 1 through $column {
+      .column-#{$i}-#{$column} {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        border: none;
+
+        width: percentage($i / $column);
+        height: inherit;
+
+        vertical-align: top;
+      }
+    }
+  }
+
+  @each $type in $screen-type {
+    @include screen($type) {
+      @each $column in $columns {
+        @for $i from 1 through $column {
+          .column-#{$type}-#{$i}-#{$column} {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+            border: none;
+
+            width: percentage($i / $column);
+            height: inherit;
+
+            vertical-align: top;
+          }
+        }
+      }
+    }
+  }
+}

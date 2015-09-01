@@ -1,0 +1,90 @@
+@import "../utils/responsive";
+
+.nav {
+  position: fixed;
+  left: 0;
+  z-index: 999;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+
+  width: 100%;
+
+  background-color: white;
+
+  @include screen(sm) {
+    box-shadow: 0 -2px 0 lightgray;
+    bottom: 0;
+  }
+
+  @include screen(md) {
+    box-shadow: 0 2px 0 lightgray;
+    top: 0;
+  }
+
+  @include screen(lg) {
+    box-shadow: 0 2px 0 lightgray;
+    top: 0;
+  }
+
+  @include screen(xl) {
+    box-shadow: 0 2px 0 lightgray;
+    top: 0;
+  }
+}
+
+.screen {
+  display: block;
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+
+  width: 100%;
+  max-width: 60rem;
+
+  @include screen(sm) {
+    padding-bottom: 4rem;
+  }
+
+  @include screen(md) {
+    padding-top: 4rem;
+  }
+
+  @include screen(lg) {
+    padding-top: 4rem;
+  }
+
+  @include screen(xl) {
+    padding-top: 4rem;
+  }
+}
+
+.subview {
+  display: block;
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+}
+
+.sidebar {
+  position: fixed;
+  top: 5rem;
+  right: 0;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+
+  @include screen(sm) {
+  }
+
+  @include screen(md) {
+  }
+
+  @include screen(lg) {
+  }
+
+  @include screen(xl) {
+  }
+}
