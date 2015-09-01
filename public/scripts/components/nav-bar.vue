@@ -12,7 +12,7 @@
 
   width: 100%;
 
-  & + div {
+  & + div, & + main {
     padding-top: 44px;
   }
 
