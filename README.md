@@ -1,2 +1,2 @@
-# boilerplate
-boilerplate for frontend project
+# prototype
+simple mobile app prototype builder
