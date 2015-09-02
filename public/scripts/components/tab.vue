@@ -17,7 +17,20 @@
   .tab-item {
     flex: 1;
 
+    color: gray;
     text-align: center;
+
+    &.active {
+      color: green;
+    }
+
+    p {
+      padding: 0.5rem 1rem;
+
+      span {
+        padding: 0 0.5rem;
+      }
+    }
   }
 }
 </style>
@@ -25,8 +38,14 @@
 <template lang="jade">
 .tab
   ul.tab-items
-    li.tab-item(v-repeat="pane in panes" v-on="click: choosePane(pane)")
-      p {{ pane.title }}
+    li.tab-item(
+      v-repeat="pane in panes"
+      v-on="click: choosePane(pane)"
+      v-class="active: pane.active"
+    )
+      p
+       span(v-class="pane.icon")
+       {{ pane.title }}
   content
 </template>
 

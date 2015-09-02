@@ -26,35 +26,14 @@
 
 <template lang="jade">
 .nav-bar
-  bar-item(item="{{ leftNavItem }}" v-on="click: onItemClick($event)")
-  p.bar-title {{ title }}
-  bar-item(item="{{ rightNavItem }}" v-on="click: onItemClick($event)")
+  content
 </template>
 
 <script>
-  var barItem = require('./bar-item.vue');
-
   module.exports = {
     data: function() {
       return {
-        leftNavItem: {
-          enable: false,
-          title: "Left"
-        },
-        title: "Title",
-        rightNavItem: {
-          enable: false,
-          title: "Right"
-        }
-      }
-    },
-    methods: {
-      onItemClick($event) {
-        console.log($event);
-      }
-    },
-    components: {
-      'bar-item': barItem
+      };
     }
   }
 </script>

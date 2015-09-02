@@ -13,6 +13,10 @@
         type: String,
         default: ""
       },
+      icon: {
+        type: String,
+        default: ""
+      },
       active: false
     },
     created: function() {
