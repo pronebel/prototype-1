@@ -1,4 +1,4 @@
-<style lang='scss'>
+<style lang="scss">
 body {
   background-color: #DDDDDD;
 }
@@ -111,64 +111,124 @@ main {
     width: 358px;
   }
 
+  *.drag-enter {
+    border: 1px solid blue;
+  }
+
   .screen {
+    margin: 0;
+    padding: 0;
     height: 480px;
 
     background-color: white;
   }
+
+  .tab {
+    min-height: 44px;
+  }
 }
 </style>
 
-<template lang='jade'>
+<template lang="jade">
 nav-bar
   .bar-item
     .toolbar
       .tool(
-        v-repeat='tool in tools',
-        tooltip='{{ tool.tip }}'
+        v-repeat="tool in tools",
+        tooltip="{{ tool.tip }}"
       )
         span(
-          v-class='tool.icon'
+          v-class="tool.icon"
         )
-  p.bar-title {{ title }}
+  p.bar-title(v-text="title")
 main.workspace
   aside.side-bar.components-panel
-    tab
-      tab-pane(
-        icon='{{ widgetsPane.icon }}'
-        title='{{ widgetsPane.title }}'
-      )
-        ul
-          li(v-repeat="widget in widgetsPane.widgets")
-            div(
-              draggable="true"
-              v-on="dragstart: dragComponent(widget, $event)"
-            )
-              span(v-class="widget.icon")
-              p {{ widget.name }}
-      tab-pane(
-        icon='{{ containersPane.icon }}'
-        title='{{ containersPane.title }}'
-      )
-        ul
-          li(v-repeat="container in widgetsPane.containers")
-            div(draggable="true")
-              span(v-class="container.icon")
-              p {{ container.name }}
+    p
+      span(v-class="componentsPane.icon")
+      span(v-text="componentsPane.title")
+    ul
+      li(v-repeat="component in componentsPane.components")
+        div(
+          draggable="true"
+          v-on="dragstart: dragComponent(component, $event)"
+        )
+          span(v-class="component.icon")
+          p(v-text="component.name")
 
   .simulator.iphone-4
     .screen(
-      v-on="drop: dropComponent"
+      v-on="drop: dropComponent($event), dragover: dragOverComponent($event), dragenter: dragEnterComponent($event), dragleave: dragLeaveComponent($event)"
     )
 
   aside.side-bar.configure-panel
 </template>
 
-<script lang='javascript'>
+<script lang="javascript">
+  var Vue = require('vue');
   var navBar = require('../components/nav-bar.vue');
   var barItem = require('../components/bar-item.vue');
   var tab = require('../components/tab.vue');
   var tabPane = require('../components/tab-pane.vue');
+
+  Vue.component('nav-bar', navBar);
+  Vue.component('bar-item', barItem);
+  Vue.component('tab', tab);
+  Vue.component('tab-pane', tabPane);
+
+  var findParentVue = function(mountDOM) {
+    if(mountDOM.__vue__) {
+      return mountDOM.__vue__;
+    } else {
+      if(mountDOM.parentNode) {
+        return findParentVue(mountDOM.parentNode);
+      } else {
+        return undefined;
+      }
+    }
+  }
+
+  var createTab = function(mountDOM) {
+    var Tab = Vue.component('tab');
+
+    var tabDOM = document.createElement('div');
+    mountDOM.appendChild(tabDOM);
+
+    var tabVM = new Tab({
+      el: tabDOM,
+      _parent: findParentVue(mountDOM)
+    });
+
+    return tabVM;
+  }
+
+  var createTabPane = function(mountDOM) {
+    var TabPane = Vue.component('tab-pane');
+
+    var tabPaneDOM = document.createElement('div');
+    tabPaneDOM.setAttribute('title', 'Pane');
+    mountDOM.appendChild(tabPaneDOM);
+
+    var tabPaneVM = new TabPane({
+      el: tabPaneDOM,
+      _parent: findParentVue(mountDOM)
+    });
+
+    return tabPaneVM;
+  }
+
+  var defaultComponentFactory = function(componentName, mountDOM) {
+    var componentVM;
+    switch(componentName) {
+      case 'tab':
+        componentVM = createTab(mountDOM);
+      break;
+      case 'tab-pane':
+        componentVM = createTabPane(mountDOM);
+      break;
+    }
+
+    return componentVM;
+  };
 
   module.exports = {
     data: function() {
@@ -187,43 +247,56 @@ main.workspace
             tip: 'Stop'
           }
         ],
-        widgetsPane: {
-          icon: 'icon-book',
-          title: 'widgets',
-          widgets: [
+        componentsPane: {
+          icon: 'icon-stack',
+          title: 'components',
+          components: [
             {
               icon: 'icon-tree',
-              name: 'Tab'
+              name: 'Tab',
+              value: 'tab'
             },
             {
               icon: 'icon-insert-template',
-              name: 'TabPane'
-            }
-          ],
-          containers: [
+              name: 'TabPane',
+              value: 'tab-pane'
+            },
             {
               icon: 'icon-list',
-              name: 'List'
+              name: 'List',
+              value: 'list'
             },
             {
               icon: 'icon-table',
-              name: 'Grid'
+              name: 'Grid',
+              value: 'grid'
             }
           ]
-        },
-        containersPane: {
-          icon: 'icon-books',
-          title: 'containers'
         }
       }
     },
     methods: {
       dragComponent: function(widget, evt) {
         evt.dataTransfer.effectAllowed = 'copy';
-        evt.dataTransfer.setData('Text', widget.name);
+        evt.dataTransfer.setData('Text', widget.value);
+      },
+      dragOverComponent: function(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+      },
+      dragEnterComponent: function(evt) {
+        evt.target.classList.add('drag-enter');
+      },
+      dragLeaveComponent: function(evt) {
+        evt.target.classList.remove('drag-enter');
       },
       dropComponent: function(evt) {
-        console.log(evt.dataTransfer.getData('Text'));
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        evt.target.classList.remove('drag-enter');
+
+        defaultComponentFactory(evt.dataTransfer.getData('Text'), evt.target);
       }
     },
     components: {

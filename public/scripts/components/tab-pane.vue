@@ -16,13 +16,17 @@
       icon: {
         type: String,
         default: ""
-      },
-      active: false
+      }
     },
-    created: function() {
+    data: function() {
+      return {
+        active: false
+      };
+    },
+    attached: function() {
       this.$parent.addPane(this);
     },
-    destroyed: function() {
+    detached: function() {
       this.$parent.removePane(this);
     }
   }
