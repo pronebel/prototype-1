@@ -123,7 +123,7 @@ main {
     background-color: white;
   }
 
-  .tab {
+  .tab-content {
     min-height: 44px;
   }
 }

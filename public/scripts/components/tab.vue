@@ -46,7 +46,8 @@
       p
        span(v-class="pane.icon")
        {{ pane.title }}
-  content
+  .tab-content
+    content
 </template>
 
 <script>
