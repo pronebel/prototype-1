@@ -159,6 +159,7 @@ main.workspace
     .screen(
       v-on="drop: dropComponent($event), dragover: dragOverComponent($event), dragenter: dragEnterComponent($event), dragleave: dragLeaveComponent($event)"
     )
+      pagination(total="{{ pagination.total }}", pager-size="{{ pagination.pagerSize }}", on-change="paginationChange")
 
   aside.side-bar.configure-panel
 </template>
@@ -169,11 +170,13 @@ main.workspace
   var barItem = require('../components/bar-item.vue');
   var tab = require('../components/tab.vue');
   var tabPane = require('../components/tab-pane.vue');
+  var pagination = require('../components/pagination.vue');
 
   Vue.component('nav-bar', navBar);
   Vue.component('bar-item', barItem);
   Vue.component('tab', tab);
   Vue.component('tab-pane', tabPane);
+  Vue.component('pagination', pagination);
 
   var findParentVue = function(mountDOM) {
     if(mountDOM.__vue__) {
@@ -233,6 +236,10 @@ main.workspace
   module.exports = {
     data: function() {
       return {
+        pagination: {
+          total: 10,
+          pagerSize: 5
+        },
         tools: [
           {
             icon: 'icon-home',
@@ -270,12 +277,20 @@ main.workspace
               icon: 'icon-table',
               name: 'Grid',
               value: 'grid'
+            },
+            {
+              icon: 'icon-books',
+              name: 'Pagination',
+              value: 'pagination'
             }
           ]
         }
       }
     },
     methods: {
+      paginationChange: function() {
+        console.log('pagination');
+      },
       dragComponent: function(widget, evt) {
         evt.dataTransfer.effectAllowed = 'copy';
         evt.dataTransfer.setData('Text', widget.value);
@@ -303,7 +318,8 @@ main.workspace
       navBar: navBar,
       barItem: barItem,
       tab: tab,
-      tabPane: tabPane
+      tabPane: tabPane,
+      pagination: pagination
     }
   };
 </script>
