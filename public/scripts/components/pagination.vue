@@ -8,6 +8,17 @@
     display: inline-block;
     padding: 0 0.5rem;
 
+    button {
+      padding: 0;
+      border: none;
+
+      outline: none;
+
+      cursor: pointer;
+
+      background: white;
+    }
+
     span {
       display: inline-block;
       border-color: currentColor;
@@ -32,16 +43,35 @@
       }
     }
   }
+
+  .jumper {
+    input {
+      display: inline-block;
+
+      height: 28px;
+
+      color: lightgray;
+      line-height: 28px;
+      text-align: center;
+    }
+  }
 }
 </style>
 
 <template lang="jade">
 .pagination
   ul.pagers
-    li.pager(v-repeat="pager in pagers", v-class="{current: pager.current}", v-on="click: goTo(pager.page)")
-      span(v-text="pager.page")
+    li.pager
+      button(v-on="click: prevPage")
+        span &lt;
+    li.pager(v-repeat="pager in pagers", v-class="{current: pager.current}")
+      button(v-on="click: goTo(pager.page)")
+        span(v-text="pager.page")
+    li.pager
+      button(v-on="click: nextPage")
+        span &gt;
   .jumper(v-show="showJumper")
-    form(v-on="submit: jump")
+    form(v-on="submit: jumpTo($event, jumper.page)")
       input(type="text", v-model="jumper.page")
 </template>
 
@@ -56,44 +86,64 @@
       pagerSize: {
         type: Number,
         default: 10
+      },
+      showJumper: {
+        type: Boolean,
+        default: false
       }
     },
     data: function() {
       return {
-        current: 0,
+        current: 1,
         total: 0,
-        pagerSize: 5,
+        pagerSize: 10,
         pagers: [],
         jumper: {
-          target: 0
+          page: 0
         },
         showJumper: false
       }
     },
     methods: {
       goTo: function(page) {
-        this.current = page - 1;
+        page = Math.min(Math.max(page, 1), this.total);
+
+        if(page == this.current) {
+          return;
+        }
+
+        this.current = page;
 
         this.update();
+
+        if(this.onChange) {
+          this.onChange(this.current);
+        }
       },
       prevPage: function() {
-        this.goTo(this.current + 1);
-      },
-      nextPage: function() {
         this.goTo(this.current - 1);
       },
-      update: function() {
-        if(this.total) {
-          this.jumper.page = this.current + 1;
+      nextPage: function() {
+        this.goTo(this.current + 1);
+      },
+      jumpTo: function($event, page) {
+        $event.preventDefault();
+
+        var _page = parseInt(page);
+        if(!isNaN(_page)) {
+          this.goTo(_page);
         }
+      },
+      update: function() {
+        this.jumper.page = this.current;
 
         var calculateRange = function(current, total, size) {
           var range = {
-            min: 0,
-            max: 0
+            min: 1,
+            max: total
           };
 
-          var halfSize = (size - 1) / 2;
+          var halfSize = Math.floor((size - 1) / 2);
           var smallPagers = current - 1;
           if(smallPagers < halfSize) {
             range.min = 1;
