@@ -123,8 +123,16 @@ main {
     background-color: white;
   }
 
-  .tab-content {
+  .tab-content, .tab-pane {
     min-height: 44px;
+  }
+
+  .tab-content {
+    padding: 5px;
+  }
+
+  .tab-pane {
+    background-color: lightgray;
   }
 }
 </style>
@@ -157,9 +165,8 @@ main.workspace
 
   .simulator.iphone-4
     .screen(
-      v-on="drop: dropComponent($event), dragover: dragOverComponent($event), dragenter: dragEnterComponent($event), dragleave: dragLeaveComponent($event)"
+      v-on="click: selectComponent($event), drop: dropComponent($event), dragover: dragOverComponent($event), dragenter: dragEnterComponent($event), dragleave: dragLeaveComponent($event)"
     )
-      pagination(total="{{ pagination.total }}", pager-size="{{ pagination.pagerSize }}", on-change="paginationChange")
 
   aside.side-bar.configure-panel
 </template>
@@ -219,6 +226,22 @@ main.workspace
     return tabPaneVM;
   }
 
+  var createPagination = function(mountDOM) {
+    var Pagination = Vue.component('pagination');
+
+    var paginationDOM = document.createElement('div');
+    paginationDOM.setAttribute('total', '{{ pagination.total }}');
+    paginationDOM.setAttribute('pager-size', '{{ pagination.pagerSize }}');
+    mountDOM.appendChild(paginationDOM);
+
+    var paginationVM = new Pagination({
+      el: paginationDOM,
+      _parent: findParentVue(mountDOM)
+    });
+
+    return paginationVM;
+  }
+
   var defaultComponentFactory = function(componentName, mountDOM) {
     var componentVM;
     switch(componentName) {
@@ -228,17 +251,21 @@ main.workspace
       case 'tab-pane':
         componentVM = createTabPane(mountDOM);
       break;
+      case 'pagination':
+        componentVM = createPagination(mountDOM);
+      break;
     }
 
     return componentVM;
   };
 
   module.exports = {
+    replace: false,
     data: function() {
       return {
         pagination: {
           total: 10,
-          pagerSize: 5
+          pagerSize: 4
         },
         tools: [
           {
@@ -288,8 +315,10 @@ main.workspace
       }
     },
     methods: {
-      paginationChange: function() {
-        console.log('pagination');
+      paginationChange: function(pagination) {
+        console.log(pagination);
+      },
+      selectComponent: function(evt) {
       },
       dragComponent: function(widget, evt) {
         evt.dataTransfer.effectAllowed = 'copy';
