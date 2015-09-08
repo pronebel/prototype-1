@@ -85,7 +85,7 @@
       },
       pagerSize: {
         type: Number,
-        default: 10
+        default: 3
       },
       showJumper: {
         type: Boolean,

@@ -97,30 +97,8 @@ main {
 }
 
 .simulator {
-  display: block;
-  margin: 0 auto;
-  padding: 19px;
-  border: none;
-
-  box-shadow: 0 0 0.1rem black;
-  border-radius: 10px;
-
-  background-color: #bbbbbb;
-
-  &.iphone-4 {
-    width: 358px;
-  }
-
   *.drag-enter {
     border: 1px solid blue;
-  }
-
-  .screen {
-    margin: 0;
-    padding: 0;
-    height: 480px;
-
-    background-color: white;
   }
 
   .tab-content, .tab-pane {
@@ -163,16 +141,16 @@ main.workspace
           span(v-class="component.icon")
           p(v-text="component.name")
 
-  .simulator.iphone-4
-    .screen(
-      v-on="click: selectComponent($event), drop: dropComponent($event), dragover: dragOverComponent($event), dragenter: dragEnterComponent($event), dragleave: dragLeaveComponent($event)"
-    )
+  simulator(
+    device="{{ simulator.device }}"
+  )
 
   aside.side-bar.configure-panel
 </template>
 
 <script lang="javascript">
   var Vue = require('vue');
+  var simulator = require('../components/simulator.vue');
   var navBar = require('../components/nav-bar.vue');
   var barItem = require('../components/bar-item.vue');
   var tab = require('../components/tab.vue');
@@ -185,87 +163,12 @@ main.workspace
   Vue.component('tab-pane', tabPane);
   Vue.component('pagination', pagination);
 
-  var findParentVue = function(mountDOM) {
-    if(mountDOM.__vue__) {
-      return mountDOM.__vue__;
-    } else {
-      if(mountDOM.parentNode) {
-        return findParentVue(mountDOM.parentNode);
-      } else {
-        return undefined;
-      }
-    }
-  }
-
-  var createTab = function(mountDOM) {
-    var Tab = Vue.component('tab');
-
-    var tabDOM = document.createElement('div');
-    mountDOM.appendChild(tabDOM);
-
-    var tabVM = new Tab({
-      el: tabDOM,
-      _parent: findParentVue(mountDOM)
-    });
-
-    return tabVM;
-  }
-
-  var createTabPane = function(mountDOM) {
-    var TabPane = Vue.component('tab-pane');
-
-    var tabPaneDOM = document.createElement('div');
-    tabPaneDOM.setAttribute('title', 'Pane');
-    mountDOM.appendChild(tabPaneDOM);
-
-    var tabPaneVM = new TabPane({
-      el: tabPaneDOM,
-      _parent: findParentVue(mountDOM)
-    });
-
-    return tabPaneVM;
-  }
-
-  var createPagination = function(mountDOM) {
-    var Pagination = Vue.component('pagination');
-
-    var paginationDOM = document.createElement('div');
-    paginationDOM.setAttribute('total', '{{ pagination.total }}');
-    paginationDOM.setAttribute('pager-size', '{{ pagination.pagerSize }}');
-    mountDOM.appendChild(paginationDOM);
-
-    var paginationVM = new Pagination({
-      el: paginationDOM,
-      _parent: findParentVue(mountDOM)
-    });
-
-    return paginationVM;
-  }
-
-  var defaultComponentFactory = function(componentName, mountDOM) {
-    var componentVM;
-    switch(componentName) {
-      case 'tab':
-        componentVM = createTab(mountDOM);
-      break;
-      case 'tab-pane':
-        componentVM = createTabPane(mountDOM);
-      break;
-      case 'pagination':
-        componentVM = createPagination(mountDOM);
-      break;
-    }
-
-    return componentVM;
-  };
-
   module.exports = {
     replace: false,
     data: function() {
       return {
-        pagination: {
-          total: 10,
-          pagerSize: 4
+        simulator: {
+          device: 'iphone-4'
         },
         tools: [
           {
@@ -315,35 +218,13 @@ main.workspace
       }
     },
     methods: {
-      paginationChange: function(pagination) {
-        console.log(pagination);
-      },
-      selectComponent: function(evt) {
-      },
       dragComponent: function(widget, evt) {
         evt.dataTransfer.effectAllowed = 'copy';
         evt.dataTransfer.setData('Text', widget.value);
-      },
-      dragOverComponent: function(evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-      },
-      dragEnterComponent: function(evt) {
-        evt.target.classList.add('drag-enter');
-      },
-      dragLeaveComponent: function(evt) {
-        evt.target.classList.remove('drag-enter');
-      },
-      dropComponent: function(evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-
-        evt.target.classList.remove('drag-enter');
-
-        defaultComponentFactory(evt.dataTransfer.getData('Text'), evt.target);
       }
     },
     components: {
+      simulator: simulator,
       navBar: navBar,
       barItem: barItem,
       tab: tab,
