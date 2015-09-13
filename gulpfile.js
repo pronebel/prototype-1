@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
 var gulp = require('gulp');
+var gutil = require('gutil');
 var gulpif = require('gulp-if');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
@@ -87,11 +88,17 @@ var vueTaskFunc = function(entry, taskCfg) {
     var entryPath = path.parse(entry);
 
     return bundler.bundle()
+                  .on('error', gutil.log)
                   .pipe(source(entryPath.name + '.js'))
+                  .on('error', gutil.log)
                   .pipe(buffer())
+                  .on('error', gutil.log)
                   .pipe(gulpif(inDevMode(), sourcemaps.init()))
+                  .on('error', gutil.log)
                   .pipe(gulpif(!inDevMode(), uglify()))
+                  .on('error', gutil.log)
                   .pipe(gulpif(inDevMode(), sourcemaps.write()))
+                  .on('error', gutil.log)
                   .pipe(gulp.dest(taskCfg.dstDir));
   };
 };
